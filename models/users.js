@@ -1,12 +1,18 @@
 const mongoose = require('mongoose');
+const product = require('./product');
 
 const userSchema = mongoose.Schema({
     fullname : String,
     email : String,
     password : String,
-    cart :[],
-    isadmin : Boolean,
-    orders : [],
+    cart :[{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "product"
+    }],
+    orders : {
+        type : Array,
+        default : []
+    },
     contact : Number,
     picture : String
 });
