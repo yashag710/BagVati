@@ -1,58 +1,90 @@
 <%- include('./partials/header') %>
-
-<% if(success.length>0){ %>
-    <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-blue-500">
-        <span class="inline-block mt-1 mb-1 text-white">
+<% if (success.length > 0) { %>
+    <div class="absolute top-5 left-1/2 transform -translate-x-1/2 p-3 rounded-md bg-blue-500 shadow-md">
+        <span class="text-white font-medium">
             <%= success %>
         </span>
     </div>
-    <% } %>
-    <div class="w-full h-screen flex items-start px-20 py-20">
-        <div class="w-[25%] flex h-screen flex-col items-start">
-            <div class="flex items-center gap-2">
-                <h3>sort by</h3>
-                <form action="/shop">
-                    <select class="border-[1px] px-2 py-1" name="sortby" id="">
+<% } %>
+
+<div class="max-w-7xl mx-auto p-6 bg-gray-100">
+    <!-- Header Section -->
+    <div class="text-center mt-24">
+        <h1 class="header-title text-4xl md:text-6xl font-bold">
+            <span class="text-orange-500 italic">Shop</span> NOW
+        </h1>
+        <p class="text-gray-500 tracking-wide uppercase text-sm mt-2">Explore Our Collection</p>
+        <p class="text-gray-700 text-base mt-4">Find the perfect product to suit your style and needs.</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-wrap mt-10">
+        <!-- Sidebar -->
+        <div class="w-full lg:w-1/4 pr-6 mb-10 lg:mb-0">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <!-- Sort By -->
+                <h3 class="text-lg font-semibold mb-4">Sort by</h3>
+                <form action="/shop" method="GET">
+                    <select id="sortSelect" class="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500" name="sortby" onchange="this.form.submit()">
                         <option value="popular">Popular</option>
                         <option value="newest">Newest</option>
                     </select>
                 </form>
-            </div>
-            <div class="flex flex-col mt-20">
-                <a class="block w-fit mb-2" href="">New Collection</a>
-                <a class="block w-fit mb-2" href="">All Products</a>
-                <a class="block w-fit mb-2" href="">Discounted Products</a>
-            </div>
-            <div class="mt-32">
-                <a class="block w-fit mb-2" href="">Filter by :</a>
-                <a class="block w-fit mb-2" href="">Availability</a>
-                <a class="block w-fit mb-2" href="">Discount</a>
+                <!-- Links -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold mb-4">Explore</h3>
+                    <a href="" class="block text-gray-700 hover:text-orange-500 mb-2">New Collection</a>
+                    <a href="" class="block text-gray-700 hover:text-orange-500 mb-2">All Products</a>
+                    <a href="" class="block text-gray-700 hover:text-orange-500 mb-2">Discounted Products</a>
+                </div>
+                <!-- Filters -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold mb-4">Filter by</h3>
+                    <a href="" class="block text-gray-700 hover:text-orange-500 mb-2">Availability</a>
+                    <a href="" class="block text-gray-700 hover:text-orange-500 mb-2">Discount</a>
+                </div>
             </div>
         </div>
-        <div class="w-[75%] flex flex-col gap-5 h-screen">
-            <div class="flex items-start gap-5">
-                <% products.forEach(function(product){ %>
-                    <div class="w-60">
+
+        <!-- Products Section -->
+        <div class="w-full lg:w-3/4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <% products.forEach(function (product) { %>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <!-- Product Image -->
                         <div class="w-full h-52 flex items-center justify-center bg-[<%= product.bgcolor %>]">
-                            <img class="h-[12rem]" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>"
-                                alt="">
+                            <img class="h-48" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
                         </div>
-                        <div
-                            class="flex justify-between bg-[<%= product.panelcolor %>] items-center px-4 py-4 text-[<%= product.textcolor %>]">
-                            <div>
-                                <h3>
-                                    <%= product.name %>
-                                </h3>
-                                <h4>₹ <%= product.price %>
-                                </h4>
+                        <!-- Product Details -->
+                        <div class="px-4 py-3 bg-[<%= product.panelcolor %>] text-[<%= product.textcolor %>]">
+                            <h3 class="font-semibold text-lg"><%= product.name %></h3>
+                            <h4 class="text-sm mt-1">₹ <%= product.price %></h4>
+                            <div class="mt-3 flex justify-end">
+                                <a href="/users/addtocart/<%= product._id %>" class="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200">
+                                    <i class="ri-add-line text-gray-700"></i>
+                                </a>
                             </div>
-                            <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="/addtocart/<%= product._id %>">
-                                <i class="ri-add-line"></i>
-                            </a>
                         </div>
                     </div>
-                    <% }) %>
+                <% }) %>
             </div>
         </div>
     </div>
-    <%- include('./partials/footer') %>
+</div>
+
+<script>
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    // Set the selected value on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        const sortValue = getQueryParam("sortby"); // Get "sortby" from URL
+        if (sortValue) {
+            document.getElementById("sortSelect").value = sortValue; // Set the selected option
+        }
+    });
+</script>
+
+<%- include('./partials/footer') %>

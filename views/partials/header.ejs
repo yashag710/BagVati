@@ -4,21 +4,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Bagvati </title>
+    <title>BagVati</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        nav ul li a:hover {
+            color: #fb923c; /* Orange hover effect */
+        }
+    </style>
 </head>
 
-<body class="font-['helvetica_now_display']">
-    <nav class="w-full flex justify-between fixed top-0 left-0 px-5 py-3">
-        <h3 class="text-xl"> Bagvati </h3>
-        <% var loggedIn = typeof loggedIn !== "undefined" ? loggedIn : true %>
-        <% if(loggedIn){ %>
-            <div class="flex gap-5">
-                <a href="/shop">Shop</a>
-                <a href="/cart">Cart</a>
-                <a href="#">My Account</a>
-                <a href="/users/logout" class="text-red-600">Logout</a>
-            </div>
-        <% } %>
-    </nav>
+<body x-data="{ navOpen: false, scrolledFromTop: false }"
+    x-init="window.pageYOffset >= 50 ? scrolledFromTop = true : scrolledFromTop = false"
+    @scroll.window="window.pageYOffset >= 50 ? scrolledFromTop = true : scrolledFromTop = false"
+    :class="{ 'overflow-hidden': navOpen, 'overflow-scroll': !navOpen }">
+
+    <!-- Navbar Section -->
+    <header class="fixed w-full bg-white shadow-lg flex justify-between items-center px-6 md:px-12 transition-all duration-200 h-20 z-50"
+        :class="{ 'h-24': !scrolledFromTop, 'h-16': scrolledFromTop }">
+
+        <!-- Logo Section -->
+        <a href="/" class="flex items-center">
+            <h1 class="header-title text-4xl text-orange-500 font-bold transform origin-left transition duration-200"
+                :class="{ 'scale-100': !scrolledFromTop, 'scale-90': scrolledFromTop }">
+                Bag<span class="text-black">Vati</span>
+            </h1>
+        </a>
+
+        <!-- Right Section: Navigation -->
+        <nav>
+            <ul class="fixed left-0 right-0 min-h-screen px-6 pt-16 space-y-6 bg-white text-gray-700 transform transition duration-300 translate-x-full md:relative md:flex md:space-x-8 md:min-h-0 md:py-0 md:space-y-0 md:translate-x-0"
+                :class="{ 'translate-x-full': !navOpen, 'translate-x-0': navOpen }">
+                <li class="text-lg md:text-base">
+                    <a href="/" @click="navOpen = false" class="hover:text-orange-500">Home</a>
+                </li>
+                <li class="text-lg md:text-base">
+                    <a href="/shop" @click="navOpen = false" class="hover:text-orange-500">Products</a>
+                </li>
+                <li class="text-lg md:text-base">
+                    <a href="/about" @click="navOpen = false" class="hover:text-orange-500">About</a>
+                </li>
+                <li class="text-lg md:text-base">
+                    <a href="/contact" @click="navOpen = false" class="hover:text-orange-500">Contact</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button @click="navOpen = !navOpen" class="text-gray-700 md:hidden focus:outline-none">
+            <i :class="navOpen ? 'ri-close-line' : 'ri-menu-line'" class="text-2xl"></i>
+        </button>
+    </header>
+
+</body>
+
+</html>

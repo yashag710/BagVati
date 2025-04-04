@@ -1,46 +1,132 @@
-<%- include('./partials/header') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BagVati - Welcome</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f3f4f6;
+    }
+    .header-title {
+      font-family: 'Playfair Display', serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <!-- Header Section -->
+  <header class="text-center py-10 bg-white shadow-md">
+    <h1 class="header-title text-4xl md:text-5xl font-bold">
+      <span class="text-orange-500 italic">Bag</span>Vati
+    </h1>
+    <p class="text-gray-600 tracking-wide uppercase text-sm mt-2">Your Gateway to Style</p>
+  </header>
+  <div>
+    <button class="bg-blue-500 p-2 border rounded hover:bg-orange-500"><a href="/owners/login"> Admin login </a></button>
+  </div>
+  <!-- Main Section -->
+  <div class="min-h-screen flex flex-col justify-center items-center py-10">
+    <!-- Welcome Heading -->
+    <h3 class="text-4xl text-center mb-10 mt-10 lg:mt-20 font-semibold header-title"> 
+      Welcome to <span class="text-orange-500 italic">BagVati</span>
+    </h3>
+    <!-- Main Section: Sign up and Log in -->
+    <div class="w-full max-w-6xl flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-16">
+      <!-- Left side: Sign Up Form -->
+      <div class="w-full lg:w-1/3 bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-3xl font-semibold text-center mb-6 header-title">Sign up</h2>
+        <form action="/users/signup" method="POST" class="space-y-4">
+          <!-- Name Field -->
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" id="name" name="name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+          </div>
+          <!-- Email Field -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+          </div>
+          <!-- Password Field -->
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+          </div>
+          <!-- Submit Button -->
+          <div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Sign Up</button>
+          </div>
+        </form>
 
-    <% if(error.length>0){ %>
-        <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-red-500">
-            <span class="inline-block mt-1 mb-1 text-white">
-                <%= error %>
-            </span>
+        <p class="text-center text-sm text-gray-500 mt-4">
+          Already have an account? <a href="#" class="text-blue-600 hover:underline">Log In</a>
+        </p>
+
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500">or</span>
+          </div>
         </div>
-        <% } %>
-            <div class="w-full h-screen flex px-20">
-                <div class="w-1/2 flex items-center justify-center h-screen">
-                    <div class="w-full px-32">
-                        <h3 class="text-4xl"> Welcome to <span class="text-blue-400 font-semibold"> Bagvati </span> </h3>
-                        <h4 class="text-2xl mb-5">Create your account</h4>
-                        <form autocomplete="off" action="/users/register" method="post">
-                            <input
-                                class="bg-zinc-100 block w-full px-3 py-2 border-[1px] rounded-md mb-3 border-zinc-200"
-                                type="text" placeholder="Full Name" name="fullname">
-                            <input
-                                class="bg-zinc-100 block w-full px-3 py-2 border-[1px] rounded-md mb-3 border-zinc-200"
-                                type="email" placeholder="Email" name="email">
-                            <input
-                                class="bg-zinc-100 block w-full px-3 py-2 border-[1px] rounded-md mb-3 border-zinc-200"
-                                type="password" placeholder="Password" name="password">
-                            <input class="px-5 rounded-full py-3 mt-2 bg-blue-500 text-white" type="submit"
-                                value="Create My Account">
-                        </form>
-                    </div>
-                </div>
-                <div class="w-1/2 flex items-center justify-center h-screen">
-                    <div class="w-full px-32">
-                        <h4 class="text-2xl capitalize mb-5">login your account</h4>
-                        <form autocomplete="off" action="/users/login" method="post">
-                            <input
-                                class="block bg-zinc-100 w-full px-3 py-2 border-[1px] rounded-md mb-3 border-zinc-200"
-                                type="email" placeholder="Email" name="email">
-                            <input
-                                class="block bg-zinc-100 w-full px-3 py-2 border-[1px] rounded-md mb-3 border-zinc-200"
-                                type="password" placeholder="Password" name="password">
-                            <input class="px-5 block rounded-full py-3 mt-2 bg-blue-500 text-white" type="submit"
-                                value="Login">
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <%- include('./partials/footer') %>
+
+        <div>
+          <button class="w-full flex items-center justify-center py-2 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5 mr-2">
+            Sign up with Google
+          </button>
+        </div>
+      </div>
+
+      <!-- Right side: Log In Form -->
+      <div class="w-full lg:w-1/3 bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-3xl font-semibold text-center mb-6 header-title">Log In</h2>
+        <form action="/users/login" method="POST" class="space-y-4">
+          <!-- Email Field -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+          </div>
+          <!-- Password Field -->
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+          </div>
+          <!-- Submit Button -->
+          <div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Log In</button>
+          </div>
+        </form>
+
+        <p class="text-center text-sm text-gray-500 mt-4">
+          Don't have an account? <a href="#" class="text-blue-600 hover:underline">Sign Up</a>
+        </p>
+
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500">or</span>
+          </div>
+        </div>
+
+        <div>
+          <button class="w-full flex items-center justify-center py-2 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5 mr-2">
+            Log in with Google
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="py-6 bg-white shadow-md text-center">
+    <p class="text-gray-500 text-sm">&copy; 2025 BagVati. All rights reserved.</p>
+  </footer>
+</body>
+</html>

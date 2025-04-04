@@ -10,10 +10,24 @@ router.get('/' , (req,res) => {
     res.send("Hey!");
 });
 
-router.post("/delete" , async function(req,res){
+// router.post("/delete" , async function(req,res){
+// })
 
-})
+router.get("/create" , async(req,res) => {
+    let success = req.flash("success");
+    res.render("createproducts" ,{success});
+});
 
+router.post("/delete" , async function(req, res) {
+    try {
+        const result = await productModel.deleteMany({});
+        console.log(`${result.deletedCount} products deleted successfully`);
+        res.redirect("back");
+        
+    } catch (error) {
+        console.log("Error occured");
+    }
+});
 router.post("/create" , upload.single("image") ,  async function(req,res){
   try{
     let { name,
@@ -22,7 +36,8 @@ router.post("/create" , upload.single("image") ,  async function(req,res){
         discount, 
         bgcolor,
         panelcolor, 
-        textcolor} = req.body;    
+        textcolor} = req.body;  
+        const createdAt = new Date();  
 
         let product = await productModel.create({
             image : req.file.buffer, 
@@ -31,7 +46,8 @@ router.post("/create" , upload.single("image") ,  async function(req,res){
             discount, 
             bgcolor,
             panelcolor, 
-            textcolor
+            textcolor,
+            createdAt
            });
         req.flash("success" , "Product created succesfully...");
         res.redirect("/owners/admin");
