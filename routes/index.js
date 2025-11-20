@@ -48,6 +48,18 @@ router.get("/about" , isLoggedIn , function(req,res) {
     res.render("about");
 });
 
+router.get("/refund-policy", isLoggedIn, function(req, res) {
+    res.render("refund-policy");
+});
+
+router.get("/terms", isLoggedIn, function(req, res) {
+    res.render("terms");
+});
+
+router.get("/return-policy", isLoggedIn, function(req, res) {
+    res.render("return-policy");
+});
+
 router.get("/cart" , isLoggedIn ,async function(req,res){
     let user = await userModel
     .findOne({email : req.user.email})

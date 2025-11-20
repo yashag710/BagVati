@@ -1,7 +1,18 @@
 const mongoose = require('mongoose');
-
+const database = 'eCommerce';
 // Connecting to the MongoDB database
-mongoose.connect("mongodb+srv://yashag1810:toweldone123@cluster07.duqh2lh.mongodb.net/eCommerce").then((x) => {
+
+console.log('Connecting to MongoDB at', process.env.MONGO_URI + database);
+
+if(!process.env.MONGO_URI){
+  console.log('MONGO_URI is not defined in environment variables');
+  process.exit(1);
+}
+mongoose.connect(`${process.env.MONGO_URI}${database}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then((x) => {
   console.log('Connected to the database');
 }).catch((err) => {
   console.log(err);

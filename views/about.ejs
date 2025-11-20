@@ -50,4 +50,18 @@
     </div>
 </section>
 
-<%- include('partials/footer') %> 
+<!-- Policy Links -->
+<section class="py-6 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-center">
+            <a href="/refund-policy" class="text-sm text-gray-700 hover:text-orange-500">Refund Policy</a>
+            <span class="hidden md:inline-block text-gray-400">|</span>
+            <a href="/terms" class="text-sm text-gray-700 hover:text-orange-500">Terms &amp; Conditions</a>
+            <span class="hidden md:inline-block text-gray-400">|</span>
+            <a href="/privacy-policy" class="text-sm text-gray-700 hover:text-orange-500">Privacy Policy</a>
+        </div>
+        <p class="text-xs text-gray-500 text-center mt-3">© <%= new Date().getFullYear() %> BagVati. All rights reserved.</p>
+    </div>
+</section>
+
+<%- include('partials/footer') %>
