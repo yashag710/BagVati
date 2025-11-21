@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const database = 'eCommerce';
+const database = 'BagVati';
 // Connecting to the MongoDB database
 
 console.log('Connecting to MongoDB at', process.env.MONGO_URI + database);
