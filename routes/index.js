@@ -56,7 +56,7 @@ router.get("/terms", isLoggedIn, function(req, res) {
     res.render("terms");
 });
 
-router.get("/return-policy", isLoggedIn, function(req, res) {
+router.get("/privacy-policy", isLoggedIn, function(req, res) {
     res.render("return-policy");
 });
 
