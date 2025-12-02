@@ -1,28 +1,78 @@
 <%- include('partials/header') %>
 
-<!-- Refund Policy -->
+<!-- Refund & Cancellation Policy -->
 <section class="pt-32 pb-16 bg-orange-50">
     <div class="container mx-auto px-6">
-        <h1 class="header-title text-4xl text-center text-gray-800 mb-6">Refund Policy</h1>
+        <h1 class="header-title text-4xl text-center text-gray-800 mb-6">Refund &amp; Cancellation Policy</h1>
         <div class="prose max-w-3xl mx-auto text-gray-700">
-            <p>This Refund and Cancellation Policy outlines how you can cancel or seek a refund for a product or service that you have purchased through the Platform.</p>
 
-            <h3>1. Cancellation Window</h3>
-            <p>Cancellations will only be considered if the request is made within 7 days of placing the order. However, cancellation requests may not be entertained if the orders have already been communicated to the seller/merchant listed on the Platform and they have initiated the process of shipping them, or if the product is out for delivery. In such an event, you may choose to reject the product at the doorstep.</p>
+            <p class="text-sm text-gray-500">Last updated: <%= new Date().toLocaleDateString('en-GB') %></p>
 
-            <h3>2. Perishable Items</h3>
-            <p>BagVati does not accept cancellation requests for perishable items like flowers, eatables, etc. However, a refund or replacement can be made if the user establishes that the quality of the product delivered is not good.</p>
+            <p>This Refund &amp; Cancellation Policy outlines the terms under which customers may cancel an order, request a return, or obtain a refund for products purchased through the BagVati Platform.</p>
 
-            <h3>3. Damaged or Defective Items</h3>
-            <p>In case of receipt of damaged or defective items, please report to our customer service team. The request will be entertained once the seller/merchant listed on the Platform has checked and determined the issue at their end. This should be reported within 7 days of receipt of the products. If you feel that the product received is not as shown on the site or as per your expectations, you must bring it to the notice of our customer service within 7 days of receiving the product. The customer service team, after investigating your complaint, will take an appropriate decision.</p>
+            <h3>1. Order Cancellation</h3>
+            <ul>
+                <li>Orders may be cancelled <strong>before they are shipped</strong>. Once an order has been dispatched, cancellation may not be possible.</li>
+                <li>If the order is already out for delivery, you may refuse delivery at the doorstep. Once returned to us, we will process the refund as applicable.</li>
+                <li>BagVati reserves the right to cancel any order due to unforeseen circumstances such as stock unavailability, payment issues, or suspicious/fraudulent activity.</li>
+            </ul>
 
-            <h3>4. Manufacturer Warranty</h3>
-            <p>For complaints regarding products that come with a warranty from the manufacturers, please refer the issue to the manufacturer as per their warranty terms.</p>
+            <h3>2. Return Eligibility</h3>
+            <p>You may request a return under the following conditions:</p>
+            <ul>
+                <li>Product received is damaged, defective, or not as described.</li>
+                <li>Product received in wrong size, wrong model, or incorrect quantity.</li>
+                <li>Return request must be submitted within <strong>48 hours of delivery</strong> along with photo/video proof.</li>
+                <li>Products must be unused, in original packaging, and with all tags intact.</li>
+            </ul>
 
-            <h3>5. Refund Processing Time</h3>
-            <p>In case of any refunds approved by BagVati, it will take up to 2 days for the refund to be processed to you.</p>
+            <h3>3. Items Not Eligible for Return</h3>
+            <ul>
+                <li>Products damaged due to misuse, mishandling, or improper usage.</li>
+                <li>Items returned without original packaging or missing accessories.</li>
+                <li>Products marked as <strong>Final Sale</strong> or <strong>Non-returnable</strong> on the product page.</li>
+            </ul>
 
-            <p class="text-sm text-gray-500">For assistance with cancellations, returns or refunds, contact our customer service at <a href="mailto:support@bagvati.example">support@bagvati.example</a>.</p>
+            <h3>4. Reporting Damaged or Defective Products</h3>
+            <ul>
+                <li>Customers must report issues within <strong>48 hours of delivery</strong>.</li>
+                <li>Photo/video evidence of the issue is required for verification.</li>
+                <li>Upon verification, BagVati will offer a replacement or refund based on the policy and product availability.</li>
+            </ul>
+
+            <h3>5. Refund Process</h3>
+            <ul>
+                <li>Refunds are issued only after the returned product passes quality inspection at our facility.</li>
+                <li>Once approved, refunds will be initiated to the original payment method used during purchase.</li>
+                <li>Refunds typically take <strong>5–7 working days</strong> to reflect in your bank/wallet account, depending on the payment gateway and issuing bank.</li>
+                <li>For prepaid orders where the payment failed but was debited, refunds are processed automatically by the payment provider within 5–7 business days.</li>
+            </ul>
+
+            <h3>6. Replacement Policy</h3>
+            <ul>
+                <li>Replacements are subject to stock availability.</li>
+                <li>If a replacement is not available, a full refund will be issued.</li>
+            </ul>
+
+            <h3>7. Manufacturer Warranty</h3>
+            <p>If the product includes a manufacturer warranty, customers must contact the manufacturer directly for warranty claims. BagVati may assist in providing relevant invoice details if required.</p>
+
+            <h3>8. Non-Refundable Conditions</h3>
+            <ul>
+                <li>Returns initiated after the allowed window.</li>
+                <li>Intentional damage, incorrect usage, or mishandling of the product.</li>
+                <li>Products used or tampered with after delivery.</li>
+            </ul>
+
+            <h3>9. Contact &amp; Support</h3>
+            <p>For assistance with cancellations, returns, replacements, or refunds, please contact our customer support team:</p>
+            <p class="text-sm text-gray-500">
+                Email: <a href="mailto:support@bagvati.works" class="text-blue-600 underline">support@bagvati.works</a><br>
+                Business Hours: Monday - Friday (09:00 AM - 06:00 PM)
+            </p>
+
+            <p>BagVati reserves the right to modify this Refund &amp; Cancellation Policy at any time. Updated terms will be posted on this page.</p>
+
         </div>
     </div>
 </section>
