@@ -1,32 +1,75 @@
 <%- include('partials/header') %>
 
 <!-- Return Policy -->
-
 <section class="pt-32 pb-16 bg-orange-50">
     <div class="container mx-auto px-6">
         <h1 class="header-title text-4xl text-center text-gray-800 mb-6">Return Policy</h1>
         <div class="prose max-w-3xl mx-auto text-gray-700">
-            <p>We offer refund / exchange within first 7 days from the date of your purchase. If 7 days have passed since your purchase, you will not be offered a return, exchange or refund of any kind.</p>
 
-            <h3>Eligibility for Return / Exchange</h3>
-            <p>To become eligible for a return or an exchange:</p>
+            <p class="text-sm text-gray-500">Last updated: <%= new Date().toLocaleDateString('en-GB') %></p>
+
+            <p>At BagVati, we strive to provide high-quality products and a seamless shopping experience. This Return Policy outlines when and how customers may return or exchange items purchased through our Platform.</p>
+
+            <h3>1. Return / Exchange Window</h3>
+            <p>Customers may request a return or exchange within <strong>7 days of delivery</strong>. After 7 days, we cannot offer returns, exchanges, or refunds.</p>
+
+            <h3>2. Eligibility for Return / Exchange</h3>
+            <p>To qualify for a return or exchange:</p>
             <ol>
-                <li>The purchased item should be unused and in the same condition as you received it.</li>
-                <li>The item must have original packaging.</li>
-                <li>If the item was purchased on a sale, it may not be eligible for return / exchange as indicated at the time of purchase.</li>
+                <li>The item must be unused, unworn, and in the same condition as delivered.</li>
+                <li>It must be returned with original packaging, tags, labels, and accessories.</li>
+                <li>Products purchased during a sale or marked as <strong>non-returnable</strong> may not be eligible.</li>
             </ol>
+            <p>Only defective, damaged, or incorrect items may be eligible for replacement subject to verification.</p>
 
-            <p>Only items found to be defective or damaged will be replaced by us based on an exchange request.</p>
+            <h3>3. Non-Returnable Items</h3>
+            <ul>
+                <li>Items damaged due to misuse, negligence, or improper handling.</li>
+                <li>Products missing original packaging or accessories.</li>
+                <li>Final sale items, special discount items, or items marked as non-returnable.</li>
+            </ul>
 
-            <h3>Return Process</h3>
-            <p>For accepted return/exchange requests, once your returned product/item is received and inspected by us, we will send you an email to notify you about receipt of the returned/exchanged product. If the return is approved after quality check at our end, your request (return/exchange) will be processed in accordance with our policies.</p>
+            <h3>4. Return Request Process</h3>
+            <p>To initiate a return or exchange, customers must:</p>
+            <ul>
+                <li>Submit a return request within <strong>48 hours of delivery</strong> if the item is defective, damaged, or incorrect.</li>
+                <li>Provide clear photo/video proof of the issue.</li>
+                <li>Wait for BagVati’s quality verification and approval.</li>
+            </ul>
+            <p>After we receive and inspect the returned item, customers will be notified via email regarding approval or rejection of the request.</p>
 
-            <h3>Shipping Policy</h3>
-            <p>Orders are shipped through registered domestic courier companies and/or speed post only. Orders are typically shipped within 3 days from the date of the order and/or payment or as per the delivery date agreed at the time of order confirmation, subject to courier company/post office norms. Platform Owner shall not be liable for any delay in delivery by the courier company/postal authority.</p>
+            <h3>5. Refunds (if applicable)</h3>
+            <ul>
+                <li>Refunds (if approved) will be initiated to the original payment method.</li>
+                <li>Refund processing time is typically <strong>5–7 working days</strong> depending on the bank or payment provider.</li>
+                <li>Shipping fees (if charged) are non-refundable.</li>
+            </ul>
 
-            <p>Delivery of all orders will be made to the address provided by the buyer at the time of purchase. Delivery confirmation will be sent to your email ID as specified during registration. If any shipping costs are levied by the seller or Platform Owner, such costs are not refundable.</p>
+            <h3>6. Exchange Policy</h3>
+            <ul>
+                <li>Exchanges are subject to stock availability.</li>
+                <li>If the requested product is unavailable, customers may opt for a refund instead.</li>
+            </ul>
 
-            <p class="text-sm text-gray-500">There may be certain categories of products/items that are exempted from returns or refunds; such categories will be identified to you at the time of purchase.</p>
+            <h3>7. Shipping & Return Logistics</h3>
+            <p>Orders are shipped through registered domestic courier partners or India Post. Dispatch typically occurs within 3 business days of order confirmation, subject to courier timelines.</p>
+            <p>Delivery timelines vary based on location, courier operations, and external factors. BagVati is not responsible for delays caused by third-party logistics providers.</p>
+
+            <p>Products must be returned to the pickup address communicated by BagVati. Return shipping fees may apply unless the product delivered was defective or incorrect.</p>
+
+            <h3>8. Delivery Address & Notifications</h3>
+            <p>Orders will be delivered to the address provided during purchase. Delivery updates and confirmation will be sent via email or SMS.</p>
+
+            <h3>9. Exempted Categories</h3>
+            <p class="text-sm text-gray-500">Certain items may be exempted from returns due to hygiene, safety, or product-type restrictions. These will be clearly indicated at the time of purchase.</p>
+
+            <h3>10. Contact & Support</h3>
+            <p>For return, refund, or exchange support, contact us at:</p>
+            <p class="text-sm text-gray-500">
+                Email: <a href="mailto:support@bagvati.works" class="text-blue-600 underline">support@bagvati.works</a><br>
+                Business Hours: Monday - Friday (09:00 AM - 06:00 PM)
+            </p>
+
         </div>
     </div>
 </section>
