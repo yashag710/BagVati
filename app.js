@@ -8,12 +8,14 @@ const userModel = require('./models/users');
 const ownerModel = require('./models/owner');
 const db = require("./config/mongoose-connection");
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
 const indexRouter = require("./routes/index");
 const ownerRouter = require("./routes/ownerRouter");
 const productRouter = require("./routes/productRouter");
 const userRouter = require("./routes/userRouter");
 
+require("dotenv").config();
 // Passport and GoogleOAuth
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -23,13 +25,14 @@ const PORT = process.env.PORT || 3000;
 app.set("trust proxy", 1);
 
 app.use(session({
-  secret: "kjdshfkjfhdf",
+  secret: process.env.SESSION_SECRET || 'yourSecret',
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
-  }
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI || 'your-mongodb-connection-string',
+    collectionName: 'sessions'
+  }),
+  cookie: { secure: true } // set to true if using HTTPS
 }));
 
 app.use(flash());
