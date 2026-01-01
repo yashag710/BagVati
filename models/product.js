@@ -8,6 +8,18 @@ const productSchema = mongoose.Schema({
         type : Number,
         default : 0 
     },
+    reviews :[{
+        review: {
+            images : [Buffer],
+            rating : Number,
+            comment : String,
+            user : {
+                type : mongoose.Schema.Types.ObjectId,
+                ref : "user"
+            },
+            createdAt : {type : Date, default : Date.now()}
+        }
+    }],
     bgcolor : String,
     panelcolor : String,
     textcolor : String,

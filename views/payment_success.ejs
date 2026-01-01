@@ -1,0 +1,58 @@
+<%- include('partials/header') %>
+
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 pt-32 pb-20 px-4">
+  <!-- Confetti Animation -->
+  <canvas id="confetti-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
+  <div class="relative z-20 flex flex-col items-center justify-center">
+    <!-- Animated Checkmark -->
+    <div class="mb-8">
+      <svg id="success-check" class="w-32 h-32 mx-auto" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="54" fill="#fff" stroke="#22c55e" stroke-width="8"/>
+        <polyline points="40,65 55,80 80,45" fill="none" stroke="#22c55e" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1 class="text-3xl md:text-4xl font-bold text-green-600 mb-4 animate-bounce">Order Placed Successfully!</h1>
+    <p class="text-gray-700 text-lg mb-8 text-center">Thank you for shopping with BagVati.<br>Your order has been placed and will be delivered soon.</p>
+    <div class="flex gap-4">
+      <a href="/users/orders" class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition shadow">View My Orders</a>
+      <a href="/" class="bg-white border border-orange-500 text-orange-500 px-6 py-3 rounded-lg font-semibold hover:bg-orange-100 transition shadow">Go to Home</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Confetti animation (simple JS)
+function confetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const confettiPieces = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    r: Math.random() * 6 + 4,
+    d: Math.random() * 2 + 1,
+    color: `hsl(${Math.random()*360},80%,60%)`
+  }));
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confettiPieces.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      p.y += p.d;
+      if (p.y > canvas.height) {
+        p.y = Math.random() * -20;
+        p.x = Math.random() * canvas.width;
+      }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+window.onload = confetti;
+</script>
+
+<%- include('partials/footer') %>

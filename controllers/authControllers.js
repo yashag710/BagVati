@@ -19,7 +19,9 @@ module.exports.registerUser = async function(req,res){
                 });
                 let token = generateToken(user);
                 res.cookie("token" , token);
-                res.render("index");
+                // Redirect after setting cookie so middleware on the next request
+                // picks up the token and templates render the logged-in UI
+                res.redirect('/shop');
             }
         });
     }); 

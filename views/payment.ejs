@@ -1,0 +1,93 @@
+
+<%- include('partials/header') %>
+
+<div class="max-w-5xl mx-auto pt-32 pb-20 px-4 md:px-6">
+  <!-- Progress Steps -->
+  <div class="flex items-center justify-center mb-8">
+    <div class="flex items-center gap-2 text-sm font-medium">
+      <div class="flex items-center gap-1 text-orange-500">
+        <span class="w-6 h-6 flex items-center justify-center rounded-full bg-orange-500 text-white">1</span>
+        <span>Cart</span>
+      </div>
+      <span class="text-gray-400">→</span>
+      <div class="flex items-center gap-1 text-orange-500">
+        <span class="w-6 h-6 flex items-center justify-center rounded-full bg-orange-500 text-white">2</span>
+        <span>Address</span>
+      </div>
+      <span class="text-gray-400">→</span>
+      <div class="flex items-center gap-1 text-orange-500">
+        <span class="w-6 h-6 flex items-center justify-center rounded-full bg-orange-500 text-white">3</span>
+        <span>Payment</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col md:flex-row gap-8">
+    <!-- Main Payment Section -->
+    <div class="flex-1 bg-white rounded-xl shadow-lg p-8 flex flex-col gap-8">
+      <h1 class="header-title text-2xl md:text-3xl text-gray-800 mb-2">Payment</h1>
+      <!-- Address Section (placeholder) -->
+      <div class="mb-6">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="font-semibold text-gray-700">Deliver to:</span>
+          <span class="text-gray-600">(Default Address)</span>
+          <button class="ml-2 text-orange-500 text-xs underline hover:text-orange-600">Change</button>
+        </div>
+        <div class="text-gray-500 text-sm">123, Your Street, City, State, 123456</div>
+      </div>
+      <form action="/payment/process" method="POST" class="space-y-6">
+        <div>
+          <h2 class="text-lg font-semibold mb-4">Select Payment Method</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label class="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:shadow transition">
+              <input type="radio" name="paymentMethod" value="upi" required class="accent-orange-500">
+              <!-- Banknotes SVG -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-orange-500"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6.75A2.25 2.25 0 015.25 4.5h13.5A2.25 2.25 0 0121 6.75v10.5A2.25 2.25 0 0118.75 19.5H5.25A2.25 2.25 0 013 17.25V6.75z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 6.75V8.25a2.25 2.25 0 002.25 2.25h13.5A2.25 2.25 0 0021 8.25V6.75" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 15.75a3 3 0 100-6 3 3 0 000 6z" /></svg>
+              <span>UPI</span>
+            </label>
+            <label class="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:shadow transition">
+              <input type="radio" name="paymentMethod" value="credit" required class="accent-orange-500">
+              <!-- Credit Card SVG -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-orange-500"><rect x="3" y="6" width="18" height="12" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18" /><path stroke-linecap="round" stroke-linejoin="round" d="M7 16h2" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 16h2" /></svg>
+              <span>Credit Card</span>
+            </label>
+            <label class="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:shadow transition">
+              <input type="radio" name="paymentMethod" value="debit" required class="accent-orange-500">
+              <!-- Credit Card SVG (same as above) -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-orange-500"><rect x="3" y="6" width="18" height="12" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18" /><path stroke-linecap="round" stroke-linejoin="round" d="M7 16h2" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 16h2" /></svg>
+              <span>Debit Card</span>
+            </label>
+            <label class="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:shadow transition">
+              <input type="radio" name="paymentMethod" value="netbanking" required class="accent-orange-500">
+              <!-- Building Bank SVG -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-orange-500"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10v10h18V10" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 4l9 6H3l9-6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M7 14v2" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 14v2" /><path stroke-linecap="round" stroke-linejoin="round" d="M17 14v2" /></svg>
+              <span>Net Banking</span>
+            </label>
+            <label class="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:shadow transition col-span-1 sm:col-span-2">
+              <input type="radio" name="paymentMethod" value="cod" required class="accent-orange-500">
+              <!-- Cash SVG -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-orange-500"><rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="12" cy="12" r="2.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 12h.01M17 12h.01" /></svg>
+              <span>Cash on Delivery (COD)</span>
+            </label>
+          </div>
+        </div>
+        <div class="sticky bottom-0 bg-white pt-4 pb-2 z-10">
+          <button type="submit" class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition text-lg shadow">Pay ₹ <%= amount %></button>
+        </div>
+      </form>
+    </div>
+    <!-- Order Summary Sidebar -->
+    <div class="w-full md:w-80 bg-gray-50 rounded-xl shadow-md p-6 h-fit">
+      <h2 class="text-lg font-semibold mb-4 text-gray-700">Order Summary</h2>
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-gray-600">Total Amount</span>
+        <span class="text-xl font-bold text-green-600">₹ <%= amount %></span>
+      </div>
+      <div class="border-t border-gray-200 my-4"></div>
+      <div class="text-sm text-gray-500 mb-2">You will be redirected to complete your payment securely.</div>
+      <div class="text-xs text-gray-400">By placing your order, you agree to our <a href="/terms" class="text-orange-500 underline">Terms & Conditions</a>.</div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

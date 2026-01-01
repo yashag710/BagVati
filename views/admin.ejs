@@ -13,12 +13,30 @@
     <div class="w-3/4 flex flex-col gap-6 ml-10">
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-semibold text-gray-800">All Products</h2>
-            <form action="/products/delete" method="post">
-                <button type="submit" class="bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 transition duration-300 flex items-center gap-2">
-                    <i class="ri-delete-bin-line"></i>
-                    Delete All Products
-                </button>
-            </form>
+            <!-- Delete all products: subtle control that opens a confirmation modal -->
+            <div class="flex items-center gap-3">
+                <button id="open-delete-modal" type="button" class="text-sm text-red-600 hover:text-red-700 border border-red-200 px-3 py-1 rounded-md transition" aria-haspopup="dialog">Delete All Products</button>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal (hidden) -->
+        <div id="delete-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-800">Confirm Delete All Products</h3>
+                    <p class="text-sm text-gray-600 mt-2">This action will permanently delete all products. To confirm, please type <span class="font-medium">delete</span> in the box below and click <span class="font-semibold">Confirm Delete</span>.</p>
+
+                    <form id="delete-all-form" action="/products/delete" method="post" class="mt-4">
+                        <label for="confirm-delete" class="block text-sm font-medium text-gray-700">Type "delete" to confirm</label>
+                        <input id="confirm-delete" name="confirm" type="text" placeholder="delete" class="mt-2 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-300" autocomplete="off" />
+
+                        <div class="mt-4 flex justify-end gap-3">
+                            <button id="cancel-delete" type="button" class="px-4 py-2 rounded border hover:bg-gray-50">Cancel</button>
+                            <button id="confirm-delete-btn" type="submit" class="px-4 py-2 rounded bg-red-600 text-white disabled:opacity-60" disabled>Confirm Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         
         <!-- Products Section -->
@@ -69,3 +87,43 @@
     </div>
 </div>
 <%- include('./partials/footer') %>
+
+<script>
+    // Modal behavior for delete all
+    (function(){
+        const openBtn = document.getElementById('open-delete-modal');
+        const modal = document.getElementById('delete-modal');
+        const cancelBtn = document.getElementById('cancel-delete');
+        const confirmInput = document.getElementById('confirm-delete');
+        const confirmBtn = document.getElementById('confirm-delete-btn');
+
+        if(!openBtn || !modal) return;
+
+        openBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            confirmInput.value = '';
+            confirmBtn.disabled = true;
+            confirmInput.focus();
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        });
+
+        // require typing 'delete' (case-insensitive)
+        confirmInput.addEventListener('input', (e) => {
+            const v = e.target.value.trim().toLowerCase();
+            confirmBtn.disabled = (v !== 'delete');
+        });
+
+        // close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape' && !modal.classList.contains('hidden')){
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        });
+    })();
+</script>

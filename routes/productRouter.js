@@ -13,6 +13,46 @@ const upload = multer({
     }
 });
 
+// Add a review to a product
+router.post('/:productid/review', isLoggedIn, async (req, res) => {
+    try {
+        const productId = req.params.productid;
+        const { rating, comment } = req.body;
+        const user = req.user; // set by isLoggedIn middleware
+
+        if (!rating || !comment) {
+            req.flash('error', 'Please provide rating and comment');
+            return res.redirect('back');
+        }
+
+        const product = await productModel.findById(productId);
+        if (!product) {
+            req.flash('error', 'Product not found');
+            return res.redirect('back');
+        }
+
+        // Push review (matches schema: reviews: [{ review: { ... } }])
+        product.reviews = product.reviews || [];
+        product.reviews.push({
+            review: {
+                images: [],
+                rating: Number(rating),
+                comment,
+                user: user ? user._id : null,
+                createdAt: new Date()
+            }
+        });
+
+        await product.save();
+        req.flash('success', 'Review added successfully');
+        res.redirect('back');
+    } catch (err) {
+        console.error('Error adding review:', err);
+        req.flash('error', 'Could not add review');
+        res.redirect('back');
+    }
+});
+
 router.get('/' , (req,res) => {
     res.send("Hey!");
 });
@@ -86,7 +126,6 @@ router.get("/edit/:productid", async (req,res) => {
     if (product.image && product.image.buffer) {
         product.imageBase64 = Buffer.from(product.image.buffer).toString("base64");
     }
-    console.log(product.imageBase64);
     res.render("editproduct", {product, success});
 });
 
@@ -113,7 +152,7 @@ router.post("/edit/:productid", upload.single("image"), async function(req,res){
         };   
 
         const product = await productModel.findById(productid);
-        product.updateData = updateData;
+        Object.assign(product, updateData);
     
         if(req.file && req.file.buffer){
             product.image = req.file.buffer;

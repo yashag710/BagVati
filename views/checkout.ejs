@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+
+<div class="max-w-7xl mx-auto pt-32 pb-20 px-6">
+  <h1 class="header-title text-3xl md:text-4xl text-gray-800 mb-8">Checkout</h1>
+  <% if (!user || !user.cart || user.cart.length === 0) { %>
+    <div class="bg-white rounded-xl shadow p-8 text-center text-gray-600">Your cart is empty.</div>
+  <% } else { %>
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Products Horizontal List -->
+      <div class="flex-1 overflow-x-auto">
+        <div class="flex gap-6 w-max items-stretch">
+          <% let subtotal = 0, totalDiscount = 0; %>
+          <% products.forEach(function(product){ %>
+            <% const price = product.price || 0; %>
+            <% const discount = product.discount || 0; %>
+            <% subtotal += price; totalDiscount += discount; %>
+            <div class="bg-white rounded-lg shadow-md w-72 flex-shrink-0 flex flex-col">
+              <div class="h-36 bg-[<%= product.bgcolor %>] flex items-center justify-center p-4">
+                <img src="<%= product.image ? `data:image/jpeg;base64,${product.image.toString('base64')}` : '' %>" alt="<%= product.name %>" class="max-h-28 object-contain" />
+              </div>
+              <div class="p-4 flex-1 flex flex-col justify-between">
+                <h3 class="text-base font-semibold truncate mb-2"><%= product.name %></h3>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm line-through text-gray-400">₹ <%= price %></span>
+                  <span class="text-lg font-semibold text-green-600">₹ <%= price - discount %></span>
+                </div>
+                <% if (discount > 0) { %>
+                  <span class="text-xs text-red-500 mt-1">Save ₹ <%= discount %></span>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+      <!-- Summary & Coupon -->
+      <div class="w-full md:w-96 bg-white rounded-xl shadow-lg p-8 flex flex-col gap-6">
+        <h2 class="text-2xl font-semibold mb-2">Order Summary</h2>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Subtotal</span>
+            <span class="text-gray-800">₹ <%= subtotal %></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Total Discount</span>
+            <span class="text-red-500">-₹ <%= totalDiscount %></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Platform Fee</span>
+            <span class="text-gray-800">₹ 20</span>
+          </div>
+        </div>
+        <form id="coupon-form" action="/apply-coupon" method="POST" class="flex gap-2 mt-4">
+          <input type="text" name="coupon" id="coupon" placeholder="Enter coupon code" class="flex-1 px-3 py-2 border rounded" value="<%= coupon || '' %>">
+          <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded font-semibold">Apply</button>
+        </form>
+        <% let Discount = couponDiscount || 0; %>
+        <% let total = subtotal - totalDiscount + 20 - Discount; %>
+        <% if (Discount > 0) { %>
+          <div class="flex justify-between items-center">
+            <span class="text-green-600 font-medium">Coupon Discount</span>
+            <span class="text-green-600">-₹ <%= Discount %></span>
+          </div>
+        <% } %>
+        <div class="border-t border-gray-200 my-4"></div>
+        <div class="flex justify-between items-center text-xl font-bold">
+          <span>Total Amount</span>
+          <span>₹ <span id="total-amount"><%= total %></span></span>
+        </div>
+        <form action="/payment" method="GET" class="mt-6">
+          <input type="hidden" name="amount" value="<%= total %>">
+          <button type="submit" class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition">Proceed to Payment</button>
+        </form>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>
