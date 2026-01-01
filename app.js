@@ -25,16 +25,18 @@ const PORT = process.env.PORT || 3000;
 app.set("trust proxy", 1);
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'yourSecret',
+  secret: process.env.SESSION_SECRET || 'defaultsecret',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI || 'your-mongodb-connection-string',
+    mongoUrl: process.env.MONGO_URI,
     collectionName: 'sessions'
   }),
-  cookie: { secure: true } // set to true if using HTTPS
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 1000 * 60 * 60 * 24 // 1 day (optional)
+  }
 }));
-
 app.use(flash());
 
 app.set("view engine" , "ejs");
