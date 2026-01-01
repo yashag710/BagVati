@@ -117,6 +117,17 @@ app.use("/owners", ownerRouter);
 app.use("/products", productRouter);
 app.use("/users" , userRouter);
 
+app.get('/ping', (req, res) => {
+  res.status(200).send('pong');
+});
+
+// Polling code to keep Render service active
+if (process.env.RENDER === 'true') {
+  setInterval(() => {
+    require('http').get(`http://localhost:${PORT}/ping`);
+  }, 1000 * 60 * 4); // every 4 minutes
+}
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
