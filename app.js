@@ -118,8 +118,10 @@ app.use("/owners", ownerRouter);
 app.use("/products", productRouter);
 app.use("/users" , userRouter);
 
+// Health / keep-alive endpoint (also used as Render's health check path).
+// no-store so no proxy or CDN answers it from cache and skips the real server.
 app.get('/ping', (req, res) => {
-  res.status(200).send('pong');
+  res.set('Cache-Control', 'no-store').status(200).send('pong');
 });
 
 app.use((req, res) => {
@@ -138,11 +140,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Polling code to keep Render service active
-if (process.env.RENDER === 'true') {
+// Keep-alive: hosts like Render's free tier put the service to sleep after 15 min with no
+// inbound traffic. The ping must go to the PUBLIC url and back through the host's proxy;
+// a request to localhost never leaves the machine, so it doesn't count.
+// Render sets RENDER_EXTERNAL_URL automatically; KEEP_ALIVE_URL works on any other host.
+const KEEP_ALIVE_URL = process.env.KEEP_ALIVE_URL || process.env.RENDER_EXTERNAL_URL;
+if (KEEP_ALIVE_URL) {
+  const pingUrl = new URL('/ping', KEEP_ALIVE_URL).href;
   setInterval(() => {
-    require('http').get(`http://localhost:${PORT}/ping`);
-  }, 1000 * 60 * 4); // every 4 minutes
+    fetch(pingUrl).catch((err) => console.error('Keep-alive ping failed:', err.message));
+  }, 1000 * 60 * 10); // every 10 min, inside the 15 min idle window
+  console.log(`Keep-alive pinging ${pingUrl} every 10 minutes`);
 }
 
 app.listen(PORT, () => {

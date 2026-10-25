@@ -1,0 +1,17 @@
+# Secrets: pass env vars at runtime (Render dashboard / docker run --env-file), never bake them in
+.env
+.env.*
+!.env.example
+
+# Installed inside the image for Linux; a local (macOS) copy would break native modules like bcrypt
+node_modules
+npm-debug.log*
+
+# Not needed at runtime
+.git
+.gitignore
+.dockerignore
+Dockerfile
+.playwright-mcp
+AUDIT.md
+Screenshot*.png
