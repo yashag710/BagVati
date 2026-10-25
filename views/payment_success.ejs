@@ -11,8 +11,28 @@
         <polyline points="40,65 55,80 80,45" fill="none" stroke="#22c55e" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <h1 class="text-3xl md:text-4xl font-bold text-green-600 mb-4 animate-bounce">Order Placed Successfully!</h1>
-    <p class="text-gray-700 text-lg mb-8 text-center">Thank you for shopping with BagVati.<br>Your order has been placed and will be delivered soon.</p>
+    <% const receipt = locals.receipt; %>
+    <% if (receipt) { %>
+      <% const amountText = '₹ ' + receipt.amount.toLocaleString('en-IN'); %>
+      <h1 class="text-3xl md:text-4xl font-bold text-green-600 mb-4 animate-bounce text-center"><%= receipt.cod ? 'Order Placed Successfully!' : 'Payment Successful!' %></h1>
+      <p class="text-gray-700 text-lg mb-6 text-center">
+        <% if (receipt.cod) { %>
+          Please keep <strong><%= amountText %></strong> ready to pay in cash on delivery.
+        <% } else { %>
+          <strong><%= amountText %></strong> paid via <%= receipt.method %><%= receipt.detail ? ' (' + receipt.detail + ')' : '' %>.
+        <% } %>
+        <br>Thank you for shopping with BagVati. Your order will be delivered soon.
+      </p>
+      <div class="bg-white rounded-xl shadow p-5 mb-8 w-full max-w-sm text-sm">
+        <div class="flex justify-between py-1"><span class="text-gray-500">Transaction ID</span><span class="font-mono font-semibold text-gray-800"><%= receipt.txnId %></span></div>
+        <div class="flex justify-between py-1"><span class="text-gray-500">Amount</span><span class="font-semibold text-gray-800"><%= amountText %></span></div>
+        <div class="flex justify-between py-1"><span class="text-gray-500">Method</span><span class="text-gray-800"><%= receipt.method %></span></div>
+        <p class="text-xs text-gray-400 mt-3 text-center">Demo payment in test mode. No money was charged.</p>
+      </div>
+    <% } else { %>
+      <h1 class="text-3xl md:text-4xl font-bold text-green-600 mb-4 animate-bounce">Order Placed Successfully!</h1>
+      <p class="text-gray-700 text-lg mb-8 text-center">Thank you for shopping with BagVati.<br>Your order has been placed and will be delivered soon.</p>
+    <% } %>
     <div class="flex gap-4">
       <a href="/users/orders" class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition shadow">View My Orders</a>
       <a href="/" class="bg-white border border-orange-500 text-orange-500 px-6 py-3 rounded-lg font-semibold hover:bg-orange-100 transition shadow">Go to Home</a>

@@ -10,21 +10,16 @@ module.exports.registerUser = async function(req,res){
         let present = await userModel.findOne({email : req.body.email});
         if(!present){
             let{email , fullname , password} = req.body;
-            bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, async function(err, hash) {
-            if(err) return res.send(err.message);
-            else{
-                let user = await userModel.create({
-                email, password : hash, fullname
-                });
-                let token = generateToken(user);
-                res.cookie("token" , token);
-                // Redirect after setting cookie so middleware on the next request
-                // picks up the token and templates render the logged-in UI
-                res.redirect('/shop');
-            }
-        });
-    }); 
+            // await form so errors land in the catch below; callback-style throws escaped it
+            let hash = await bcrypt.hash(password, 10);
+            let user = await userModel.create({
+            email, password : hash, fullname
+            });
+            let token = generateToken(user);
+            res.cookie("token" , token);
+            // Redirect after setting cookie so middleware on the next request
+            // picks up the token and templates render the logged-in UI
+            res.redirect('/shop');
 }
 else {
     return res.status(401).send("User exists");

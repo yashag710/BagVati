@@ -1,0 +1,4 @@
+<%# Usage: include('partials/stars', { rating: 4.5, size: 'text-base' }) %>
+<span class="inline-flex items-center text-yellow-400 <%= locals.size || '' %>" role="img" aria-label="<%= rating %> out of 5 stars">
+    <% for (let i = 1; i <= 5; i++) { %><i class="<%= rating >= i ? 'ri-star-fill' : rating >= i - 0.5 ? 'ri-star-half-fill' : 'ri-star-line' %>" aria-hidden="true"></i><% } %>
+</span>

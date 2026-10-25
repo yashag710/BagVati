@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const productModel = require("../models/product");
 const isLoggedIn = require('../middlewares/isLoggedIn');
+const isOwner = require('../middlewares/isOwner');
+const wrap = require("../utils/asyncHandler");
 const userModel = require("../models/users");
 const users = require('../models/users');
 const multer = require("multer");
@@ -60,12 +62,12 @@ router.get('/' , (req,res) => {
 // router.post("/delete" , async function(req,res){
 // })
 
-router.get("/create" , async(req,res) => {
+router.get("/create" , isOwner , async(req,res) => {
     let success = req.flash("success");
     res.render("createproducts" ,{success});
 });
 
-router.post("/delete" , async function(req, res) {
+router.post("/delete" , isOwner , async function(req, res) {
     try {
         const result = await productModel.deleteMany({});
         console.log(`${result.deletedCount} products deleted successfully`);
@@ -76,7 +78,7 @@ router.post("/delete" , async function(req, res) {
     }
 });
 
-router.get("/delete/:productid", async function(req,res){
+router.get("/delete/:productid", isOwner, async function(req,res){
     try{
         let productid = req.params.productid;
         await productModel.findByIdAndDelete(productid);
@@ -89,7 +91,7 @@ router.get("/delete/:productid", async function(req,res){
     }
 });
 
-router.post("/create" , upload.single("image") ,  async function(req,res){
+router.post("/create" , isOwner , upload.single("image") ,  async function(req,res){
   try{
     let { name,
         image, 
@@ -118,7 +120,7 @@ router.post("/create" , upload.single("image") ,  async function(req,res){
    }
 });
 
-router.get("/edit/:productid", async (req,res) => {
+router.get("/edit/:productid", isOwner, wrap(async (req,res) => {
     let success = req.flash("success");
     let productid = req.params.productid;
     let product = await productModel.findOne({_id : productid});
@@ -127,9 +129,9 @@ router.get("/edit/:productid", async (req,res) => {
         product.imageBase64 = Buffer.from(product.image.buffer).toString("base64");
     }
     res.render("editproduct", {product, success});
-});
+}));
 
-router.post("/edit/:productid", upload.single("image"), async function(req,res){
+router.post("/edit/:productid", isOwner, upload.single("image"), wrap(async function(req,res){
     try{
         let productid = req.params.productid;
         let { name,
@@ -162,8 +164,29 @@ router.post("/edit/:productid", upload.single("image"), async function(req,res){
         res.redirect("/owners/admin");
 
     }catch(error){
-        res.status(400).send("Error occured while updating the product", error.message);
+        res.status(400).send("Error occured while updating the product");
     }
-});
+}));
+
+// Product detail page. Keep last: "/:productid" would otherwise swallow "/create".
+router.get("/:productid", isLoggedIn, wrap(async (req, res, next) => {
+    const product = await productModel.findById(req.params.productid).populate("reviews.review.user", "fullname");
+    if (!product) return next(); // falls through to the 404 page
+
+    const related = await productModel
+        .find({ _id: { $ne: product._id } })
+        .select("-reviews")
+        .limit(4);
+    const inCart = Boolean(req.user && (req.user.cart || []).some(id => String(id) === String(product._id)));
+
+    res.render("product", {
+        product,
+        related,
+        inCart,
+        user: req.user,
+        success: req.flash("success"),
+        error: req.flash("error")
+    });
+}));
 
 module.exports = router;

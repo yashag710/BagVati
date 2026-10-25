@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const {generateToken} = require("../utils/generateToken");
 const {registerUser , loginUser , logout} = require("../controllers/authControllers");
 const isLoggedIn = require('../middlewares/isLoggedIn');
+const wrap = require("../utils/asyncHandler");
 const productModel = require("../models/product");
 
 // Passport for Google OAuth
@@ -14,9 +15,9 @@ const passport = require('passport');
 router.get('/' , (req,res) => {
     res.send("Hey!");
 });
-router.post("/register", registerUser);
+router.post("/register", wrap(registerUser));
 
-router.post("/login" , loginUser);
+router.post("/login" , wrap(loginUser));
 
 router.get("/logout" , logout);
 
@@ -58,10 +59,12 @@ router.post('/addtocart/:id', isLoggedIn, async (req, res) => {
         if (!exists) {
             user.cart.push(product._id);
             await user.save();
-            req.flash('success', 'Product added to cart');
-        } else {
-            req.flash('success', 'Product is already in cart');
         }
+        // background request from public/javascripts/cart.js: no flash, or it would resurface on the next page load
+        if (req.accepts(['html', 'json']) === 'json') {
+            return res.json({ added: !exists, cartCount: user.cart.length });
+        }
+        req.flash('success', exists ? 'Product is already in cart' : 'Product added to cart');
         return res.redirect('/shop');
     } catch (err) {
         console.error('Add to cart error:', err);
@@ -118,7 +121,8 @@ router.get('/auth/google/callback',
 router.get("/orders", isLoggedIn, async (req,res) => {
     try{
         const user = await userModel.findOne({email : req.user.email}).populate("orders");
-        res.render("orders", {orders : user.orders});
+        // newest first; skip products the owner has since deleted (populate leaves null)
+        res.render("orders", {orders : user.orders.filter(Boolean).reverse()});
     } catch (err) {
         console.error('Error fetching orders:', err);
         res.redirect('/main');

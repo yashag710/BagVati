@@ -20,7 +20,14 @@
         nav ul li a:hover {
             color: #fb923c; /* Orange hover effect */
         }
+
+        /* "added" feedback on cart buttons and the header badge (public/javascripts/cart.js) */
+        @keyframes bv-pop { 50% { transform: scale(1.2); } }
+        @media (prefers-reduced-motion: no-preference) {
+            .bv-pop { animation: bv-pop .35s ease; }
+        }
     </style>
+    <script src="/javascripts/cart.js" defer></script>
 </head>
 
 <body x-data="{ navOpen: false, scrolledFromTop: false }"
@@ -68,7 +75,15 @@
         </nav>
 
         <!-- Right-side controls: show profile (with dropdown) if logged in, otherwise Sign Up / Login -->
-        <div class="ml-4">
+        <div class="ml-4 flex items-center gap-5">
+            <% if (user) { %>
+            <% const cartCount = user.cart ? user.cart.length : 0; %>
+            <a href="/cart" class="relative text-gray-700 hover:text-orange-500" aria-label="Cart">
+                <i class="ri-shopping-cart-2-line text-2xl" aria-hidden="true"></i>
+                <%# always rendered so cart.js can reveal it after the first add %>
+                <span id="cart-count" class="absolute -top-1.5 -right-2.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-orange-500 text-white text-xs font-semibold flex items-center justify-center <%= cartCount ? '' : 'hidden' %>"><%= cartCount %></span>
+            </a>
+            <% } %>
             <% if (user || owner) { %>
             <div class="hidden md:block relative group">
                 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 bg-gray-100 flex items-center justify-center">

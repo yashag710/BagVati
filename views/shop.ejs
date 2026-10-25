@@ -1,11 +1,8 @@
 <%- include('./partials/header') %>
-<% if (success.length > 0) { %>
-    <div class="absolute top-5 left-1/2 transform -translate-x-1/2 p-3 rounded-md bg-blue-500 shadow-md">
-        <span class="text-white font-medium">
-            <%= success %>
-        </span>
-    </div>
-<% } %>
+<% success.forEach(function (msg) { %><div hidden data-toast="<%= msg %>"></div><% }) %>
+<% const cartIds = new Set(((user && user.cart) || []).map(String)); %>
+<% const reviewerName = (r) => (r.review.user && r.review.user.fullname) || 'Anonymous'; %>
+<% const avgRating = (reviews) => reviews.length ? Math.round(reviews.reduce((sum, r) => sum + (r.review.rating || 0), 0) / reviews.length * 10) / 10 : 0; %>
 
 <div class="max-w-7xl mx-auto p-6 bg-gray-100">
     <!-- Header Section -->
@@ -51,106 +48,51 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <% products.forEach(function (product) { %>
                     <% const reviews = product.reviews || []; %>
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full relative">
+                    <% const avg = avgRating(reviews); %>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full">
                         <!-- Product Image -->
-                        <div class="relative bg-[<%= product.bgcolor %>] flex items-center justify-center h-72">
-                            <img class="max-h-60 w-auto object-contain" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
+                        <a href="/products/<%= product._id %>" class="relative bg-[<%= product.bgcolor %>] flex items-center justify-center h-72 group/img" aria-label="View <%= product.name %>">
+                            <% if (product.image) { %>
+                                <img class="max-h-60 w-auto object-contain transition-transform duration-300 group-hover/img:scale-105" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
+                            <% } %>
                             <div class="absolute top-4 left-4 bg-white/95 text-base text-gray-800 px-3 py-1.5 rounded-lg font-semibold">₹ <%= product.price %></div>
-                        </div>
-
-                        <!-- Reviews Overlay (hidden) -->
-                        <div id="reviews-overlay-<%= product._id %>" class="absolute inset-0 z-40 hidden items-start justify-center p-6">
-                            <div class="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-250">
-                                <div class="p-4 border-b flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <h4 class="font-semibold">Reviews for <span class="text-orange-500"><%= product.name %></span></h4>
-                                        <span class="text-sm text-gray-500">(<%= reviews.length %>)</span>
-                                    </div>
-                                    <div>
-                                        <button type="button" class="close-overlay text-gray-600 hover:text-gray-800" data-productid="<%= product._id %>">Close ✕</button>
-                                    </div>
-                                </div>
-                                <div class="p-4 max-h-64 overflow-y-auto space-y-3 bg-gray-50">
-                                    <% if (reviews.length === 0) { %>
-                                        <p class="text-sm text-gray-500">No reviews yet.</p>
-                                    <% } else { %>
-                                        <% reviews.forEach(function(r){ %>
-                                            <div class="p-3 bg-white border rounded">
-                                                <div class="flex items-start justify-between">
-                                                    <div>
-                                                        <div class="font-medium"><%= r.review.user && r.review.user.name ? r.review.user.name : 'Anonymous' %></div>
-                                                        <div class="text-xs text-gray-500"><%= new Date(r.review.createdAt).toLocaleDateString() %></div>
-                                                    </div>
-                                                    <div class="text-sm text-yellow-500">Rating: <%= r.review.rating %>/5</div>
-                                                </div>
-                                                <p class="mt-2 text-sm text-gray-700"><%= r.review.comment %></p>
-                                            </div>
-                                        <% }) %>
-                                    <% } %>
-                                </div>
-                                <% if (user) { %>
-                                    <div class="p-4 border-t bg-white">
-                                        <form id="overlay-review-form-<%= product._id %>" action="/products/<%= product._id %>/review" method="POST" class="space-y-3">
-                                            <div class="flex gap-3 items-center">
-                                                <label for="overlay-rating-<%= product._id %>" class="text-sm">Rating</label>
-                                                <select id="overlay-rating-<%= product._id %>" name="rating" class="border rounded px-2 py-1">
-                                                    <option value="5">5</option>
-                                                    <option value="4">4</option>
-                                                    <option value="3">3</option>
-                                                    <option value="2">2</option>
-                                                    <option value="1">1</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <textarea id="overlay-comment-<%= product._id %>" name="comment" required rows="4" class="w-full border rounded px-3 py-2" placeholder="Write your review..."></textarea>
-                                            </div>
-                                            <div class="text-right">
-                                                <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded">Submit Review</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                <% } %>
-                            </div>
-                        </div>
+                        </a>
 
                         <!-- Product Details -->
                         <div class="p-6 flex-1 flex flex-col justify-between bg-[<%= product.panelcolor %>] text-[<%= product.textcolor %>]">
                             <div class="flex items-start justify-between gap-4">
-                                <div class="flex-1">
-                                    <h3 class="text-xl font-semibold leading-tight mb-1"><%= product.name %></h3>
-                                    <div class="text-sm text-gray-600">&nbsp;</div>
-                                </div>
+                                <h3 class="flex-1 min-w-0 text-xl font-semibold leading-tight">
+                                    <a href="/products/<%= product._id %>" class="hover:text-orange-500"><%= product.name %></a>
+                                </h3>
                                 <div class="flex-shrink-0">
-                                    <form action="/users/addtocart/<%= product._id %>" method="POST" class="inline">
-                                        <button type="submit" class="px-4 py-2 bg-white rounded shadow text-gray-800 hover:bg-gray-100 text-base" title="Add to cart">
-                                            <i class="ri-add-line"></i>
-                                        </button>
-                                    </form>
+                                    <%- include('./partials/add-to-cart', { product, inCart: cartIds.has(String(product._id)), variant: 'icon' }) %>
                                 </div>
                             </div>
 
-                            <div class="mt-4 flex items-center justify-between">
-                                <div class="flex items-center gap-3 text-base text-gray-700">
-                                    <i class="ri-star-fill text-yellow-400"></i>
-                                    <span class="font-medium"><%= reviews.length %> review<%= reviews.length !== 1 ? 's' : '' %></span>
+                            <div class="mt-6 flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-1.5 text-sm text-gray-700 whitespace-nowrap">
+                                    <% if (reviews.length) { %>
+                                        <i class="ri-star-fill text-yellow-400 text-base" aria-hidden="true"></i>
+                                        <span class="font-semibold"><%= avg %></span>
+                                        <span class="text-gray-500">(<%= reviews.length %> review<%= reviews.length !== 1 ? 's' : '' %>)</span>
+                                    <% } else { %>
+                                        <span class="text-gray-500">No reviews yet</span>
+                                    <% } %>
                                 </div>
-
-                                <div class="flex items-center gap-3">
-                                    <button type="button" class="toggle-reviews inline-flex items-center gap-2 px-4 py-2 border border-gray-200 rounded text-base text-gray-700 hover:bg-gray-50" data-productid="<%= product._id %>">
-                                        <i class="ri-chat-3-line"></i>
-                                        <span>Reviews</span>
-                                    </button>
-                                </div>
+                                <button type="button" data-open-reviews="<%= product._id %>" class="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 rounded text-sm text-gray-700 hover:bg-gray-50">
+                                    <i class="ri-chat-3-line" aria-hidden="true"></i>
+                                    <span>Reviews</span>
+                                </button>
                             </div>
                         </div>
 
                         <div class="p-4 border-t bg-white flex items-center justify-between">
                             <% if (user) { %>
-                                <button type="button" class="text-base text-orange-500 hover:underline open-overlay-btn" data-productid="<%= product._id %>">Write a review</button>
+                                <button type="button" data-open-reviews="<%= product._id %>" data-focus-comment class="text-base text-orange-500 hover:underline">Write a review</button>
                             <% } else { %>
                                 <a href="/main" class="text-base text-gray-500">Login to review</a>
                             <% } %>
-                            <a href="/products/<%= product._id %>" class="text-base text-gray-600 hover:text-orange-500">View</a>
+                            <a href="/products/<%= product._id %>" class="inline-flex items-center gap-1 text-base text-gray-600 hover:text-orange-500">View <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
                         </div>
                     </div>
                 <% }) %>
@@ -158,6 +100,72 @@
         </div>
     </div>
 </div>
+
+<!-- Reviews modals: rendered outside the cards so the card's overflow/size can't clip them -->
+<% products.forEach(function (product) { %>
+    <% const reviews = (product.reviews || []).slice().reverse(); %>
+    <% const avg = avgRating(reviews); %>
+    <div id="reviews-modal-<%= product._id %>" class="reviews-modal fixed inset-0 z-[60] hidden items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true" aria-labelledby="reviews-title-<%= product._id %>">
+        <div class="modal-panel w-full max-w-lg max-h-[90vh] flex flex-col bg-white rounded-xl shadow-2xl overflow-hidden transition duration-200 scale-95 opacity-0">
+            <div class="px-5 py-4 border-b flex items-start justify-between gap-4">
+                <div class="min-w-0">
+                    <p class="text-xs uppercase tracking-wide text-gray-500">Reviews</p>
+                    <h2 id="reviews-title-<%= product._id %>" class="header-title text-xl md:text-2xl text-gray-800 truncate"><%= product.name %></h2>
+                    <div class="mt-1 flex items-center gap-2 text-sm text-gray-600">
+                        <%- include('./partials/stars', { rating: avg }) %>
+                        <span><%= reviews.length ? avg + ' · ' : '' %><%= reviews.length %> review<%= reviews.length !== 1 ? 's' : '' %></span>
+                    </div>
+                </div>
+                <button type="button" data-close-reviews class="w-9 h-9 flex-shrink-0 inline-flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800" aria-label="Close reviews">
+                    <i class="ri-close-line text-xl" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-gray-50">
+                <% if (reviews.length === 0) { %>
+                    <p class="text-sm text-gray-500 text-center py-6">No reviews yet. Be the first to share your thoughts.</p>
+                <% } else { %>
+                    <% reviews.forEach(function (r) { %>
+                        <div class="p-4 bg-white border border-gray-100 rounded-lg">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <div class="font-medium text-gray-800 truncate"><%= reviewerName(r) %></div>
+                                    <div class="text-xs text-gray-500"><%= new Date(r.review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></div>
+                                </div>
+                                <%- include('./partials/stars', { rating: r.review.rating || 0, size: 'text-sm' }) %>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-700 break-words"><%= r.review.comment %></p>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+
+            <div class="px-5 py-4 border-t bg-white">
+                <% if (user) { %>
+                    <form action="/products/<%= product._id %>/review" method="POST" class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <label for="rating-<%= product._id %>" class="text-sm font-medium text-gray-700">Your rating</label>
+                            <select id="rating-<%= product._id %>" name="rating" class="border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300">
+                                <option value="5">5 - Excellent</option>
+                                <option value="4">4 - Good</option>
+                                <option value="3">3 - Average</option>
+                                <option value="2">2 - Poor</option>
+                                <option value="1">1 - Terrible</option>
+                            </select>
+                        </div>
+                        <label for="comment-<%= product._id %>" class="sr-only">Your review</label>
+                        <textarea id="comment-<%= product._id %>" name="comment" required rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" placeholder="What did you like or dislike?"></textarea>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-5 py-2 bg-orange-500 text-white rounded-md font-medium hover:bg-orange-600">Submit review</button>
+                        </div>
+                    </form>
+                <% } else { %>
+                    <a href="/main" class="text-sm text-orange-500 hover:underline">Login to write a review</a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+<% }) %>
 
 <script>
     function getQueryParam(param) {
@@ -171,65 +179,52 @@
         if (sortValue) {
             document.getElementById("sortSelect").value = sortValue; // Set the selected option
         }
-        // Attach review toggles
-        // inline reviews overlay toggles (animated overlay over card)
-        function openOverlay(id){
-            const overlay = document.getElementById('reviews-overlay-' + id);
-            if(!overlay) return;
-            const inner = overlay.firstElementChild; // modal container
-            overlay.classList.remove('hidden');
-            // allow layout then animate
-            requestAnimationFrame(() => {
-                inner.classList.remove('scale-95','opacity-0');
-                inner.classList.add('scale-100','opacity-100');
+
+        // Reviews modal
+        let openModal = null;
+        let lastTrigger = null;
+
+        function openReviews(id, trigger, focusComment) {
+            const modal = document.getElementById('reviews-modal-' + id);
+            if (!modal) return;
+            openModal = modal;
+            lastTrigger = trigger;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            requestAnimationFrame(function () {
+                modal.querySelector('.modal-panel').classList.remove('scale-95', 'opacity-0');
             });
+            const target = (focusComment && modal.querySelector('textarea')) || modal.querySelector('[data-close-reviews]');
+            target.focus();
         }
 
-        function closeOverlay(id){
-            const overlay = document.getElementById('reviews-overlay-' + id);
-            if(!overlay) return;
-            const inner = overlay.firstElementChild;
-            inner.classList.remove('scale-100','opacity-100');
-            inner.classList.add('scale-95','opacity-0');
-            setTimeout(() => overlay.classList.add('hidden'), 220);
+        function closeReviews() {
+            if (!openModal) return;
+            const modal = openModal;
+            openModal = null;
+            modal.querySelector('.modal-panel').classList.add('scale-95', 'opacity-0');
+            setTimeout(function () {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 200);
+            document.body.style.overflow = '';
+            if (lastTrigger) lastTrigger.focus();
         }
 
-        document.querySelectorAll('.toggle-reviews').forEach(function(btn){
-            btn.addEventListener('click', function(){
-                const id = this.dataset.productid;
-                openOverlay(id);
+        document.querySelectorAll('[data-open-reviews]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                openReviews(btn.dataset.openReviews, btn, btn.hasAttribute('data-focus-comment'));
             });
         });
-
-        // buttons that open the overlay directly (Write a review)
-        document.querySelectorAll('.open-overlay-btn').forEach(function(btn){
-            btn.addEventListener('click', function(){
-                const id = this.dataset.productid;
-                openOverlay(id);
-                // focus textarea when overlay opens
-                setTimeout(() => {
-                    const ta = document.getElementById('overlay-comment-' + id);
-                    if(ta) ta.focus();
-                }, 250);
+        document.querySelectorAll('.reviews-modal').forEach(function (modal) {
+            modal.addEventListener('click', function (e) {
+                // backdrop click or close button
+                if (e.target === modal || e.target.closest('[data-close-reviews]')) closeReviews();
             });
         });
-
-        // close overlay buttons
-        document.querySelectorAll('.close-overlay').forEach(function(btn){
-            btn.addEventListener('click', function(){
-                const id = this.dataset.productid;
-                closeOverlay(id);
-            });
-        });
-
-        // close overlay when clicking outside inner modal
-        document.querySelectorAll('[id^="reviews-overlay-"]').forEach(function(overlay){
-            overlay.addEventListener('click', function(e){
-                if(e.target === overlay){
-                    const id = overlay.id.replace('reviews-overlay-','');
-                    closeOverlay(id);
-                }
-            });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeReviews();
         });
     });
 </script>

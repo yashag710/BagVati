@@ -10,6 +10,8 @@ const bodyParser = require("body-parser");
 const emailjs = require("@emailjs/nodejs");
 const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
+const isOwner = require("../middlewares/isOwner");
+const wrap = require("../utils/asyncHandler");
 
 dotenv.config();
 
@@ -17,12 +19,7 @@ router.get('/' , (req,res) => {
     res.send("Hey!");
 });
 
-router.post("/delete" , async (req,res) => {
-    const response = await ownerModel.deleteMany({});
-    return res.status(500).send({message : "Owner deleted successfully"});
-});
-
-router.post("/create", async (req,res) => {
+router.post("/create", wrap(async (req,res) => {
         let owners = await ownerModel.find();
         if(owners.length > 0){
             return res.status(503).send("You are not authorized to be an owner.");
@@ -31,19 +28,17 @@ router.post("/create", async (req,res) => {
         console.log(req.body);
 
         let {fullname , email , password} = req.body;
-        bcrypt.genSalt(10, function(err, salt) {
-            bcrypt.hash(password, salt, async function(err, hash) {
-                let createdOwner = await ownerModel.create({
-                    fullname : fullname,
-                    email : email,
-                    password : hash
-                });
-                let token = generateToken(createdOwner);
-                res.cookie("token" , token);
-                return res.status(201).send(createdOwner);
-            });
+        // await form so errors reach wrap(); callback-style throws would escape it
+        let hash = await bcrypt.hash(password, 10);
+        let createdOwner = await ownerModel.create({
+            fullname : fullname,
+            email : email,
+            password : hash
         });
-    }); 
+        let token = generateToken(createdOwner);
+        res.cookie("token" , token);
+        return res.status(201).send(createdOwner);
+    }));
 
 router.get("/login" , async function(req,res){
     res.render("owner-login");
@@ -105,11 +100,11 @@ router.post("/login", async function(req, res) {
     }
 });
 
-router.get("/admin" , async (req,res) => {
+router.get("/admin" , isOwner , wrap(async (req,res) => {
     let success = req.flash("success");
     let products = await productModel.find({});
     res.render("admin" , {success , products});
-});
+}));
 
 router.post("/send-email", async (req, res) => {
     try {
@@ -127,14 +122,14 @@ router.post("/send-email", async (req, res) => {
             host: "smtp.gmail.com",
             port: 465,
             auth: {
-                user: "yashag1810@gmail.com",
-                pass: 'icpf ovto hxpa sjoi'
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
             },
         });
 
         const mailOptions = {
             from: email,
-            to: "yashag1810@gmail.com",
+            to: process.env.EMAIL_USER,
             subject: `Contact Form: ${subject}`,
             html: `
                 <h2>New Contact Form Submission</h2>

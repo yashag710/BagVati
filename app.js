@@ -53,7 +53,8 @@ app.use(async (req, res, next) => {
     if (req.cookies && req.cookies.token) {
       const decoded = jwt.verify(req.cookies.token, process.env.jwt_key);
       const user = await userModel.findOne({ email: decoded.email }).select('-password');
-      const owner = await ownerModel.findOne({email : decoded.email});
+      // match id too: a user account can be registered with the owner's email
+      const owner = await ownerModel.findOne({ _id : decoded.id, email : decoded.email });
 
       if(owner){
         res.locals.owner = owner;
@@ -119,6 +120,22 @@ app.use("/users" , userRouter);
 
 app.get('/ping', (req, res) => {
   res.status(200).send('pong');
+});
+
+app.use((req, res) => {
+  res.status(404).render("errorPage", { title: "Page not found", message: "This page doesn't exist.", redirect: "/" });
+});
+
+app.use((err, req, res, next) => {
+  // a malformed id in the URL (e.g. /products/edit/xyz) is a missing page, not a server fault
+  const notFound = err.name === "CastError";
+  if (!notFound) console.error(err);
+  if (res.headersSent) return next(err);
+  res.status(notFound ? 404 : 500).render("errorPage", {
+    title: notFound ? "Page not found" : "Something went wrong",
+    message: notFound ? "This page doesn't exist." : "Please try again in a moment.",
+    redirect: "/"
+  });
 });
 
 // Polling code to keep Render service active

@@ -1,0 +1,28 @@
+<%# Usage: include('partials/add-to-cart', { product, inCart, variant: 'icon' | 'full' | 'again' })
+    The data-in-cart attribute drives the "added" look; public/javascripts/cart.js flips it after a background POST. %>
+<form action="/users/addtocart/<%= product._id %>" method="POST" data-add-to-cart data-in-cart="<%= inCart ? 'true' : 'false' %>" class="group inline-flex">
+    <% if (variant === 'icon') { %>
+        <button type="submit" title="Add to cart" aria-label="<%= inCart ? 'In cart' : 'Add ' + product.name + ' to cart' %>"
+            class="w-11 h-11 inline-flex items-center justify-center rounded-lg shadow text-lg transition-colors bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-60
+                   group-data-[in-cart=true]:bg-green-600 group-data-[in-cart=true]:text-white group-data-[in-cart=true]:hover:bg-green-700">
+            <i class="ri-add-line group-data-[in-cart=true]:hidden" aria-hidden="true"></i>
+            <i class="ri-check-line hidden group-data-[in-cart=true]:inline" aria-hidden="true"></i>
+        </button>
+    <% } else if (variant === 'again') { %>
+        <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-orange-500 text-orange-500 text-sm font-medium transition-colors hover:bg-orange-50 disabled:opacity-60
+                   group-data-[in-cart=true]:border-green-600 group-data-[in-cart=true]:text-green-700 group-data-[in-cart=true]:hover:bg-green-50">
+            <i class="ri-refresh-line group-data-[in-cart=true]:hidden" aria-hidden="true"></i>
+            <i class="ri-check-line hidden group-data-[in-cart=true]:inline" aria-hidden="true"></i>
+            <span class="group-data-[in-cart=true]:hidden">Buy again</span>
+            <span class="hidden group-data-[in-cart=true]:inline">In cart</span>
+        </button>
+    <% } else { %>
+        <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-white shadow transition-colors bg-orange-500 hover:bg-orange-600 disabled:opacity-60
+                   group-data-[in-cart=true]:bg-green-600 group-data-[in-cart=true]:hover:bg-green-700">
+            <i class="ri-shopping-cart-2-line group-data-[in-cart=true]:hidden" aria-hidden="true"></i>
+            <i class="ri-check-line hidden group-data-[in-cart=true]:inline" aria-hidden="true"></i>
+            <span class="group-data-[in-cart=true]:hidden">Add to cart</span>
+            <span class="hidden group-data-[in-cart=true]:inline">Added to cart</span>
+        </button>
+    <% } %>
+</form>
